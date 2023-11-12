@@ -23,8 +23,19 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => console.log('Connected to MongoDB Atlas'));
 
+const secureMiddleware = (req, res, next) => {
+  const token = req.headers.authorization;
+  const validToken = process.env.YOUR_SECURE_TOKEN; 
+
+  if (token === validToken) {
+    next();
+  } else {
+    res.status(401).json({ message: 'Unauthorized' });
+  }
+};
+
 // Routes
-app.use('/api/data', require('./routes/data'));
+app.use('/api/data',secureMiddleware, require('./routes/data'));
 
 // Serve a simple message on the root URL
 app.get('/', (req, res) => {

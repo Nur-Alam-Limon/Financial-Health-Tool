@@ -1,4 +1,4 @@
-// App.js (update the existing code)
+// App.js
 import React, { useState } from 'react';
 import InputForm from './components/InputForm';
 import FinancialHealthScore from './components/FinancialHealthScore';
@@ -6,15 +6,27 @@ import Visualization from './components/Visualization';
 import axios from 'axios';
 
 const App = () => {
-  const [financialData, setFinancialData] = useState({});
   const [financialHealthScore, setFinancialHealthScore] = useState(null);
+  const [scores, setScores]=useState([]);
+  const[date, setDate]=useState([]);
 
   const calculateFinancialHealth = async ({ companyName, income, expenses, debts, assets }) => {
+    const formatDate = (date) => {
+      const dd = String(date.getDate()).padStart(2, '0');
+      const mm = String(date.getMonth() + 1).padStart(2, '0'); 
+      const yy = String(date.getFullYear()).slice(-2);
+  
+      return `${dd}/${mm}/${yy}`;
+    };
+
     // Convert inputs to numbers
     income = parseFloat(income);
     expenses = parseFloat(expenses);
     debts = parseFloat(debts);
     assets = parseFloat(assets);
+
+    const date=formatDate(new Date());
+  
 
     // Check if any input is not a valid number
     if (isNaN(income) || isNaN(expenses) || isNaN(debts) || isNaN(assets)) {
@@ -27,7 +39,7 @@ const App = () => {
     const assetToDebtRatio = assets / debts;
     const overallBalance = (income - expenses) + (assets - debts);
 
-    // Define scoring logic (you can adjust these thresholds based on your criteria)
+    // Define scoring logic
     let score = 0;
 
     if (expenseToIncomeRatio <= 0.5) {
@@ -58,6 +70,7 @@ const App = () => {
     setFinancialHealthScore(score);
 
     try {
+      const secureToken = process.env.SECURE_TOKEN;
       // Make a POST request to the backend endpoint
       const response = await axios.post('http://localhost:4000/api/data', {
         companyName,
@@ -66,14 +79,40 @@ const App = () => {
         debts,
         assets,
         score,
-      });
+        date
+      }, {
+        headers: {
+          Authorization: secureToken,
+        },
+      }
+      );
 
-      // Handle the response as needed
-      console.log('Data saved successfully', response.data);
+      //console.log('Data saved successfully', response.data);
 
     } catch (error) {
       // Handle errors
-      console.error('Error saving data', error);
+      //console.error('Error saving data', error);
+    }
+
+    try {
+      const secureToken = process.env.SECURE_TOKEN;
+
+      const response = await axios.get(`http://localhost:4000/api/data?companyName=${companyName}`, {
+        headers: {
+          Authorization: secureToken,
+        },
+      }
+      );
+
+      setDate(response.data.dates);
+      setScores(response.data.scores);
+
+      
+      //console.log('Data get successfully', response.data);
+
+    } catch (error) {
+      // Handle errors
+      console.error('Error getting data', error);
     }
     
   };
@@ -81,10 +120,10 @@ const App = () => {
   return (
     <div className='main-div'>
       <div>
-      <h1>Financial Health Tool</h1>
-      <InputForm onSubmit={calculateFinancialHealth} />
-      {financialHealthScore !== null && <FinancialHealthScore score={financialHealthScore} />}
-      {financialHealthScore != null && <Visualization financialScore={financialHealthScore} />}
+        <h1>Financial Health Tool</h1>
+        <InputForm onSubmit={calculateFinancialHealth} />
+        {financialHealthScore !== null && <FinancialHealthScore financialScore={financialHealthScore} />}
+        {scores.length>0 && <Visualization scores={scores} date={date}/>}
       </div>
     </div>
   );

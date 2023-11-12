@@ -16,7 +16,7 @@ const InputForm = ({ onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form>
       <label>
         Company Name:
         <br />
@@ -80,7 +80,7 @@ const InputForm = ({ onSubmit }) => {
         />
       </label>
       <br />
-      <button type="submit">Calculate</button>
+      <div onClick={handleSubmit} className="submit">Calculate</div>
     </form>
   );
 };

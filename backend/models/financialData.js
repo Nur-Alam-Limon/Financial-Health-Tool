@@ -26,7 +26,10 @@ const FinancialDataSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  // Add other fields as needed
+  date:{
+    type: String,
+    required: true,
+  }
 });
 
 const FinancialData = mongoose.model('FinancialData', FinancialDataSchema);

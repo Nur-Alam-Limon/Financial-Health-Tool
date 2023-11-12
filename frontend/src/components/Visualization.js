@@ -1,28 +1,64 @@
 import React from 'react';
-import Chart from 'react-apexcharts';
+import ReactApexChart from 'react-apexcharts';
 
-const Visualization = ({ financialScore }) => {
+const Visualization = ({ scores, date }) => {
   const chartOptions = {
-    labels: ['Financial Score'],
-    colors: ['#5863F8'], // Adjust color as needed
-    plotOptions: {
-        radialBar: {
-          dataLabels: {
-            value: {
-              fontSize: '18px', // Adjust font size
-              color: '#fff', // Adjust text color
-            },
-          },
-        },
+    chart: {
+      type: 'line',
+      zoom: {
+        enabled: false
       },
-  };
+      tooltip: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false 
+      },
+    },
+    dataLabels: {
+      enabled: false
+    },
+    stroke: {
+      curve: 'straight', 
+      width: 3,
+    },
+    grid: {
+      row: {
+        colors: ['#E3E3E3', '#fff'],
+        opacity: 1
+      },
+    },
+    xaxis: {
+      categories: date,
+      labels: {
+        style: {
+          colors: '#E1E2EF', 
+          fontSize: '12px',
+        }
+      },
+    },
+    yaxis: {
+      min: 0,
+      max: 100,
+      labels: {
+        style: {
+          colors: '#E1E2EF', 
+          fontSize: '12px',
+        }
+      },
+      tickAmount: 5,
+    }
+  }
 
-  const chartSeries = [financialScore];
+  const chartSeries = [{
+    name: "Health",
+    data: scores
+  }];
 
   return (
     <div className='visualizer'>
-      <h2>Score Visualization</h2>
-      <Chart options={chartOptions} series={chartSeries} type="radialBar" height={350} />
+      <h2>Financial Health Graph</h2>
+      <ReactApexChart options={chartOptions} series={chartSeries} type="line" />
     </div>
   );
 };
