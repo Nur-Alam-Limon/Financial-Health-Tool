@@ -72,7 +72,7 @@ const App = () => {
     try {
       const secureToken = process.env.SECURE_TOKEN;
       // Make a POST request to the backend endpoint
-      const response = await axios.post('http://localhost:4000/api/data', {
+      const response = await axios.post(`${process.env.endpoint}/api/data`, {
         companyName,
         income,
         expenses,
@@ -97,7 +97,7 @@ const App = () => {
     try {
       const secureToken = process.env.SECURE_TOKEN;
 
-      const response = await axios.get(`http://localhost:4000/api/data?companyName=${companyName}`, {
+      const response = await axios.get(`${process.env.endpoint}/api/data?companyName=${companyName}`, {
         headers: {
           Authorization: secureToken,
         },
