@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import InputForm from './components/InputForm';
 import FinancialHealthScore from './components/FinancialHealthScore';
 import Visualization from './components/Visualization';
+import axios from 'axios';
 
 const App = () => {
   const [financialData, setFinancialData] = useState({});
   const [financialHealthScore, setFinancialHealthScore] = useState(null);
 
-  const calculateFinancialHealth = ({ income, expenses, debts, assets }) => {
+  const calculateFinancialHealth = async ({ companyName, income, expenses, debts, assets }) => {
     // Convert inputs to numbers
     income = parseFloat(income);
     expenses = parseFloat(expenses);
@@ -55,6 +56,26 @@ const App = () => {
 
     // Set the financial health score
     setFinancialHealthScore(score);
+
+    try {
+      // Make a POST request to the backend endpoint
+      const response = await axios.post('http://localhost:4000/api/data', {
+        companyName,
+        income,
+        expenses,
+        debts,
+        assets,
+        score,
+      });
+
+      // Handle the response as needed
+      console.log('Data saved successfully', response.data);
+
+    } catch (error) {
+      // Handle errors
+      console.error('Error saving data', error);
+    }
+    
   };
 
   return (

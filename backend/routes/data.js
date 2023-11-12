@@ -6,8 +6,8 @@ const FinancialData = require('../models/financialData.js');
 // Save financial data
 router.post('/', async (req, res) => {
   try {
-    const { companyName, income, expenses, debts, assets } = req.body;
-    const financialData = new FinancialData({ companyName, income, expenses, debts, assets });
+    const { companyName, income, expenses, debts, assets, score } = req.body;
+    const financialData = new FinancialData({ companyName, income, expenses, debts, assets, score });
     await financialData.save();
     res.json({ message: 'Financial data saved successfully' });
   } catch (error) {

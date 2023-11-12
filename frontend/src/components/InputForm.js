@@ -1,6 +1,5 @@
 // InputForm.js
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const InputForm = ({ onSubmit }) => {
   const [companyName, setCompanyName] = useState('');
@@ -11,27 +10,9 @@ const InputForm = ({ onSubmit }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("helloaxax");
 
-    try {
-      // Make a POST request to the backend endpoint
-      const response = await axios.post('http://localhost:4000/api/data', {
-        companyName,
-        income,
-        expenses,
-        debts,
-        assets,
-      });
-
-      // Handle the response as needed
-      console.log('Data saved successfully', response.data);
-
-      // Pass the financial data to the parent component
-      onSubmit({ companyName, income, expenses, debts, assets });
-    } catch (error) {
-      // Handle errors
-      console.error('Error saving data', error);
-    }
+    // Pass the financial data to the parent component
+    onSubmit({ companyName, income, expenses, debts, assets });
   };
 
   return (
